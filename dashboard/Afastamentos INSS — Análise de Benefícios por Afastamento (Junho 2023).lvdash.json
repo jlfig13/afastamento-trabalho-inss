@@ -1,0 +1,1776 @@
+{
+  "datasets": [
+    {
+      "name": "cid_dist",
+      "displayName": "Distribuição por Grupo de CID",
+      "queryLines": [
+        "SELECT\n",
+        "  c.cid_grupo_desc,\n",
+        "  SUM(f.qtd_beneficios) as qtd_registros\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    JOIN dim_cid c\n",
+        "      ON f.cid_sk = c.cid_sk\n",
+        "GROUP BY\n",
+        "  c.cid_grupo_desc\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "kpis",
+      "displayName": "KPIs Executivos",
+      "queryLines": [
+        "SELECT\n",
+        "  SUM(qtd_beneficios) as total_afastamentos,\n",
+        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  SUM(ind_acidentario) as qtd_acidentario,\n",
+        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias,\n",
+        "  ROUND(AVG(qt_sm_rmi), 2) as rmi_media_sm\n",
+        "FROM\n",
+        "  fato_afastamentos"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "osteomuscular",
+      "displayName": "Osteomuscular por Perfil",
+      "queryLines": [
+        "SELECT\n",
+        "  faixa_etaria,\n",
+        "  sexo,\n",
+        "  SUM(qtd_beneficios) as qtd_registros\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "WHERE\n",
+        "  ind_osteomuscular = 1\n",
+        "GROUP BY\n",
+        "  faixa_etaria,\n",
+        "  sexo\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "saude_mental",
+      "displayName": "Saúde Mental por Perfil",
+      "queryLines": [
+        "SELECT\n",
+        "  faixa_etaria,\n",
+        "  sexo,\n",
+        "  SUM(qtd_beneficios) as qtd_registros\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "WHERE\n",
+        "  ind_saude_mental = 1\n",
+        "GROUP BY\n",
+        "  faixa_etaria,\n",
+        "  sexo\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "natureza",
+      "displayName": "Distribuição por Natureza do Afastamento",
+      "queryLines": [
+        "SELECT\n",
+        "  e.natureza_afastamento_desc,\n",
+        "  SUM(f.qtd_beneficios) as qtd_registros\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    JOIN dim_especie e\n",
+        "      ON f.especie_sk = e.especie_sk\n",
+        "GROUP BY\n",
+        "  e.natureza_afastamento_desc\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "uf_dist",
+      "displayName": "Distribuição por UF de Residência",
+      "queryLines": [
+        "SELECT\n",
+        "  g.uf_sigla,\n",
+        "  g.uf_nome,\n",
+        "  SUM(f.qtd_beneficios) as qtd_registros,\n",
+        "  SUM(f.ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(f.ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  SUM(f.ind_acidentario) as qtd_acidentario\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    JOIN dim_geografia g\n",
+        "      ON f.geografia_sk = g.geografia_sk\n",
+        "GROUP BY\n",
+        "  g.uf_sigla,\n",
+        "  g.uf_nome\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "faixa_etaria",
+      "displayName": "Perfil por Faixa Etária",
+      "queryLines": [
+        "SELECT\n",
+        "  faixa_etaria,\n",
+        "  SUM(qtd_beneficios) as qtd_registros,\n",
+        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  SUM(ind_acidentario) as qtd_acidentario,\n",
+        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias,\n",
+        "  ROUND(AVG(qt_sm_rmi), 2) as rmi_media_sm\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "GROUP BY\n",
+        "  faixa_etaria\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "forma_filiacao",
+      "displayName": "Perfil por Forma de Filiação",
+      "queryLines": [
+        "SELECT\n",
+        "  forma_filiacao,\n",
+        "  SUM(qtd_beneficios) as qtd_registros,\n",
+        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  SUM(ind_acidentario) as qtd_acidentario,\n",
+        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "GROUP BY\n",
+        "  forma_filiacao\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "especie",
+      "displayName": "Distribuição por Espécie",
+      "queryLines": [
+        "SELECT\n",
+        "  e.especie_desc,\n",
+        "  e.natureza_afastamento_desc,\n",
+        "  SUM(f.qtd_beneficios) as qtd_registros\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    JOIN dim_especie e\n",
+        "      ON f.especie_sk = e.especie_sk\n",
+        "GROUP BY\n",
+        "  e.especie_desc,\n",
+        "  e.natureza_afastamento_desc\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "cnae_cobertura",
+      "displayName": "Cobertura do CNAE",
+      "queryLines": [
+        "SELECT\n",
+        "  SUM(f.qtd_beneficios) as total_registros,\n",
+        "  SUM(\n",
+        "    CASE\n",
+        "      WHEN a.ind_cnae_informado = 1 THEN f.qtd_beneficios\n",
+        "      ELSE 0\n",
+        "    END\n",
+        "  ) as total_com_cnae\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    LEFT JOIN dim_atividade a\n",
+        "      ON f.atividade_sk = a.atividade_sk"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "sexo",
+      "displayName": "Perfil por Sexo",
+      "queryLines": [
+        "SELECT\n",
+        "  sexo,\n",
+        "  SUM(qtd_beneficios) as qtd_registros,\n",
+        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  SUM(ind_acidentario) as qtd_acidentario\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "GROUP BY\n",
+        "  sexo\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "qualidade",
+      "displayName": "Indicadores de Qualidade dos Dados",
+      "queryLines": [
+        "SELECT\n",
+        "  'CID Informado' as indicador,\n",
+        "  SUM(\n",
+        "    CASE\n",
+        "      WHEN ind_cid_informado = 1 THEN qtd_beneficios\n",
+        "      ELSE 0\n",
+        "    END\n",
+        "  ) as qtd,\n",
+        "  SUM(qtd_beneficios) as total\n",
+        "FROM\n",
+        "  fato_afastamentos\n",
+        "UNION ALL\n",
+        "SELECT\n",
+        "  'CNAE Informado',\n",
+        "  SUM(\n",
+        "    CASE\n",
+        "      WHEN a.ind_cnae_informado = 1 THEN f.qtd_beneficios\n",
+        "      ELSE 0\n",
+        "    END\n",
+        "  ),\n",
+        "  SUM(f.qtd_beneficios)\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    LEFT JOIN dim_atividade a\n",
+        "      ON f.atividade_sk = a.atividade_sk\n",
+        "UNION ALL\n",
+        "SELECT\n",
+        "  'Geografia Identificada',\n",
+        "  SUM(\n",
+        "    CASE\n",
+        "      WHEN g.status_geografia != 'NI' THEN f.qtd_beneficios\n",
+        "      ELSE 0\n",
+        "    END\n",
+        "  ),\n",
+        "  SUM(f.qtd_beneficios)\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    LEFT JOIN dim_geografia g\n",
+        "      ON f.geografia_sk = g.geografia_sk"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "cnae_ramo",
+      "displayName": "Distribuição por Ramo de Atividade",
+      "queryLines": [
+        "SELECT\n",
+        "  a.ramo_atividade,\n",
+        "  SUM(f.qtd_beneficios) as qtd_registros,\n",
+        "  SUM(f.ind_saude_mental) as qtd_saude_mental,\n",
+        "  SUM(f.ind_osteomuscular) as qtd_osteomuscular,\n",
+        "  ROUND(AVG(f.duracao_beneficio_dias), 2) as duracao_media_dias\n",
+        "FROM\n",
+        "  fato_afastamentos f\n",
+        "    JOIN dim_atividade a\n",
+        "      ON f.atividade_sk = a.atividade_sk\n",
+        "WHERE\n",
+        "  a.ind_cnae_informado = 1\n",
+        "GROUP BY\n",
+        "  a.ramo_atividade\n",
+        "ORDER BY\n",
+        "  qtd_registros DESC"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    }
+  ],
+  "pages": [
+    {
+      "name": "2e521c0f",
+      "displayName": "Visão Geral",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_total",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(total_afastamentos)",
+                      "expression": "SUM(`total_afastamentos`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total de Registros"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_afastamentos)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_saude_mental",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(qtd_saude_mental)",
+                      "expression": "SUM(`qtd_saude_mental`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Saúde Mental"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(qtd_saude_mental)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_osteomuscular",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(qtd_osteomuscular)",
+                      "expression": "SUM(`qtd_osteomuscular`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Osteomuscular"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(qtd_osteomuscular)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_acidentario",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(qtd_acidentario)",
+                      "expression": "SUM(`qtd_acidentario`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Natureza Acidentária"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(qtd_acidentario)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_duracao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(duracao_media_dias)",
+                      "expression": "SUM(`duracao_media_dias`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Duração Média (dias)"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(duracao_media_dias)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_rmi",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "sum(rmi_media_sm)",
+                      "expression": "SUM(`rmi_media_sm`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "RMI Média (SM)"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(rmi_media_sm)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_cid",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cid_dist",
+                  "fields": [
+                    {
+                      "name": "cid_grupo_desc",
+                      "expression": "`cid_grupo_desc`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por Grupo de CID"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "cid_grupo_desc",
+                  "displayName": "cid_grupo_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "cid_grupo_desc",
+                  "displayName": "cid_grupo_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "diagnosticos",
+      "displayName": "Diagnósticos",
+      "layout": [
+        {
+          "widget": {
+            "name": "bar_cid",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cid_dist",
+                  "fields": [
+                    {
+                      "name": "cid_grupo_desc",
+                      "expression": "`cid_grupo_desc`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por Grupo de CID"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "cid_grupo_desc",
+                  "displayName": "cid_grupo_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "cid_grupo_desc",
+                  "displayName": "cid_grupo_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_saude_mental",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "saude_mental",
+                  "fields": [
+                    {
+                      "name": "sexo",
+                      "expression": "`sexo`"
+                    },
+                    {
+                      "name": "faixa_etaria",
+                      "expression": "`faixa_etaria`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Saúde Mental por Faixa Etária e Sexo"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "faixa_etaria",
+                  "displayName": "faixa_etaria",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "sexo",
+                  "displayName": "sexo",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_osteomuscular",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "osteomuscular",
+                  "fields": [
+                    {
+                      "name": "sexo",
+                      "expression": "`sexo`"
+                    },
+                    {
+                      "name": "faixa_etaria",
+                      "expression": "`faixa_etaria`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Osteomuscular por Faixa Etária e Sexo"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "faixa_etaria",
+                  "displayName": "faixa_etaria",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "sexo",
+                  "displayName": "sexo",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "natureza_afastamento",
+      "displayName": "Natureza do Afastamento",
+      "layout": [
+        {
+          "widget": {
+            "name": "pie_natureza",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "natureza",
+                  "fields": [
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    },
+                    {
+                      "name": "natureza_afastamento_desc",
+                      "expression": "`natureza_afastamento_desc`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por Natureza"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(qtd_registros)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "qtd_registros"
+                },
+                "color": {
+                  "fieldName": "natureza_afastamento_desc",
+                  "displayName": "natureza_afastamento_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 9
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_especie",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "especie",
+                  "fields": [
+                    {
+                      "name": "natureza_afastamento_desc",
+                      "expression": "`natureza_afastamento_desc`"
+                    },
+                    {
+                      "name": "especie_desc",
+                      "expression": "`especie_desc`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por Espécie de Benefício"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "especie_desc",
+                  "displayName": "especie_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "natureza_afastamento_desc",
+                  "displayName": "natureza_afastamento_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 9
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "geografia",
+      "displayName": "Geografia de Residência",
+      "layout": [
+        {
+          "widget": {
+            "name": "bar_uf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "uf_dist",
+                  "fields": [
+                    {
+                      "name": "uf_sigla",
+                      "expression": "`uf_sigla`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por UF de Residência"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "uf_sigla",
+                  "displayName": "uf_sigla",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "uf_sigla",
+                  "displayName": "uf_sigla",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_uf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "uf_dist",
+                  "fields": [
+                    {
+                      "name": "uf_sigla",
+                      "expression": "`uf_sigla`"
+                    },
+                    {
+                      "name": "uf_nome",
+                      "expression": "`uf_nome`"
+                    },
+                    {
+                      "name": "qtd_registros",
+                      "expression": "`qtd_registros`"
+                    },
+                    {
+                      "name": "qtd_saude_mental",
+                      "expression": "`qtd_saude_mental`"
+                    },
+                    {
+                      "name": "qtd_osteomuscular",
+                      "expression": "`qtd_osteomuscular`"
+                    },
+                    {
+                      "name": "qtd_acidentario",
+                      "expression": "`qtd_acidentario`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhamento por UF"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "uf_sigla"
+                  },
+                  {
+                    "fieldName": "uf_nome"
+                  },
+                  {
+                    "fieldName": "qtd_registros"
+                  },
+                  {
+                    "fieldName": "qtd_saude_mental"
+                  },
+                  {
+                    "fieldName": "qtd_osteomuscular"
+                  },
+                  {
+                    "fieldName": "qtd_acidentario"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "perfil",
+      "displayName": "Perfil dos Registros",
+      "layout": [
+        {
+          "widget": {
+            "name": "bar_faixa_etaria",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "faixa_etaria",
+                  "fields": [
+                    {
+                      "name": "faixa_etaria",
+                      "expression": "`faixa_etaria`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Registros por Faixa Etária"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "faixa_etaria",
+                  "displayName": "faixa_etaria",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "faixa_etaria",
+                  "displayName": "faixa_etaria",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_sexo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "sexo",
+                  "fields": [
+                    {
+                      "name": "sexo",
+                      "expression": "`sexo`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Registros por Sexo"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sexo",
+                  "displayName": "sexo",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "sexo",
+                  "displayName": "sexo",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_forma_filiacao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "forma_filiacao",
+                  "fields": [
+                    {
+                      "name": "forma_filiacao",
+                      "expression": "`forma_filiacao`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Registros por Forma de Filiação"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "forma_filiacao",
+                  "displayName": "forma_filiacao",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "forma_filiacao",
+                  "displayName": "forma_filiacao",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "table_perfil",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "faixa_etaria",
+                  "fields": [
+                    {
+                      "name": "faixa_etaria",
+                      "expression": "`faixa_etaria`"
+                    },
+                    {
+                      "name": "qtd_registros",
+                      "expression": "`qtd_registros`"
+                    },
+                    {
+                      "name": "qtd_saude_mental",
+                      "expression": "`qtd_saude_mental`"
+                    },
+                    {
+                      "name": "qtd_osteomuscular",
+                      "expression": "`qtd_osteomuscular`"
+                    },
+                    {
+                      "name": "qtd_acidentario",
+                      "expression": "`qtd_acidentario`"
+                    },
+                    {
+                      "name": "duracao_media_dias",
+                      "expression": "`duracao_media_dias`"
+                    },
+                    {
+                      "name": "rmi_media_sm",
+                      "expression": "`rmi_media_sm`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Perfil Demográfico Detalhado"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "faixa_etaria"
+                  },
+                  {
+                    "fieldName": "qtd_registros"
+                  },
+                  {
+                    "fieldName": "qtd_saude_mental"
+                  },
+                  {
+                    "fieldName": "qtd_osteomuscular"
+                  },
+                  {
+                    "fieldName": "qtd_acidentario"
+                  },
+                  {
+                    "fieldName": "duracao_media_dias"
+                  },
+                  {
+                    "fieldName": "rmi_media_sm"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 12,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "atividade",
+      "displayName": "Atividade Econômica",
+      "layout": [
+        {
+          "widget": {
+            "name": "counter_total",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cnae_cobertura",
+                  "fields": [
+                    {
+                      "name": "sum(total_registros)",
+                      "expression": "SUM(`total_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total de Registros"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_registros)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "counter_cnae",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cnae_cobertura",
+                  "fields": [
+                    {
+                      "name": "sum(total_com_cnae)",
+                      "expression": "SUM(`total_com_cnae`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Registros com CNAE Informado"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_com_cnae)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_ramo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cnae_ramo",
+                  "fields": [
+                    {
+                      "name": "ramo_atividade",
+                      "expression": "`ramo_atividade`"
+                    },
+                    {
+                      "name": "sum(qtd_registros)",
+                      "expression": "SUM(`qtd_registros`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuição por Ramo de Atividade"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ramo_atividade",
+                  "displayName": "ramo_atividade",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd_registros)",
+                  "displayName": "qtd_registros",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "ramo_atividade",
+                  "displayName": "ramo_atividade",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "table_ramo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cnae_ramo",
+                  "fields": [
+                    {
+                      "name": "ramo_atividade",
+                      "expression": "`ramo_atividade`"
+                    },
+                    {
+                      "name": "qtd_registros",
+                      "expression": "`qtd_registros`"
+                    },
+                    {
+                      "name": "qtd_saude_mental",
+                      "expression": "`qtd_saude_mental`"
+                    },
+                    {
+                      "name": "qtd_osteomuscular",
+                      "expression": "`qtd_osteomuscular`"
+                    },
+                    {
+                      "name": "duracao_media_dias",
+                      "expression": "`duracao_media_dias`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhamento por Ramo"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "ramo_atividade"
+                  },
+                  {
+                    "fieldName": "qtd_registros"
+                  },
+                  {
+                    "fieldName": "qtd_saude_mental"
+                  },
+                  {
+                    "fieldName": "qtd_osteomuscular"
+                  },
+                  {
+                    "fieldName": "duracao_media_dias"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "qualidade",
+      "displayName": "Qualidade dos Dados",
+      "layout": [
+        {
+          "widget": {
+            "name": "bar_qualidade",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "qualidade",
+                  "fields": [
+                    {
+                      "name": "indicador",
+                      "expression": "`indicador`"
+                    },
+                    {
+                      "name": "sum(qtd)",
+                      "expression": "SUM(`qtd`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Cobertura dos Indicadores de Qualidade"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "indicador",
+                  "displayName": "indicador",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(qtd)",
+                  "displayName": "qtd",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "indicador",
+                  "displayName": "indicador",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_qualidade",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "qualidade",
+                  "fields": [
+                    {
+                      "name": "indicador",
+                      "expression": "`indicador`"
+                    },
+                    {
+                      "name": "qtd",
+                      "expression": "`qtd`"
+                    },
+                    {
+                      "name": "total",
+                      "expression": "`total`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhamento de Qualidade dos Dados"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "indicador"
+                  },
+                  {
+                    "fieldName": "qtd"
+                  },
+                  {
+                    "fieldName": "total"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
