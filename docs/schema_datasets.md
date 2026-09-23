@@ -4,10 +4,10 @@
 
 | Item | Valor |
 |---|---|
-| Nome do arquivo | `beneficios_concedidos_202306.csv` |
+| Nome do arquivo | 37 arquivos CSV (`beneficios_concedidos_AAAAMM.csv`) |
 | Fonte | Dados abertos do INSS |
-| Competência | Junho de 2023 |
-| Quantidade de registros | 463.568 |
+| Competência | jun/2023 a jul/2026 (28 competências) |
+| Quantidade de registros | 23.689.332 |
 | Quantidade de colunas originais | 27 |
 | Delimitador | Ponto e vírgula (`;`) |
 | Codificação | UTF-8 |
@@ -22,7 +22,7 @@ Neste projeto, cada linha é tratada como um registro de benefício concedido. E
 
 Consequentemente, o grão adotado no pipeline é:
 
-> Uma linha representa um registro de benefício concedido pelo INSS na competência analisada.
+> Uma linha representa um registro de benefício concedido pelo INSS no período analisado.
 
 As contagens produzidas pelo pipeline representam:
 
@@ -113,9 +113,9 @@ A camada Bronze possui 30 colunas:
 | `mun_cod` | `mun_resid` | string | Código do município extraído do início do campo |
 | `mun_nome` | `mun_resid` | string | Trecho geográfico restante após a remoção do código, atualmente contendo UF e nome do município |
 | `cid_capitulo` | `cid_cod` | string | Letra inicial do código CID |
-| `cid_grupo` | `cid_cod` | string | Grupo analítico: `mental`, `osteomuscular`, `outros` ou `nao_informado` |
+| `cid_grupo` | `cid_cod` | string | Grupo analitico: mental, osteomuscular, cardiovascular, respiratorio, lesoes_causas_externas, digestivo, geniturinario, neoplasias, nervoso, endocrino_metabolico, infecciosas, pele, sentidos, gravidez_parto, congenitas, perinatal, causas_externas, fatores_saude, sintomas, especiais, outros ou nao_informado |
 | `cid_status` | `cid_cod` | string | Situação do CID: `informado` ou `nao_informado` |
-| `tipo_beneficio` | `especie_cod` | string | Classificação em `afastamento`, `aposentadoria`, `pensao`, `assistencial`, `maternidade` ou `outros` |
+| `tipo_beneficio` | `especie_cod` | string | Classificacao em `afastamento`, `aposentadoria`, `pensao`, `assistencial`, `maternidade`, `reclusao`, `sem_especie_definida` ou `outros` |
 
 ### 5.1 Regra de derivação do município
 

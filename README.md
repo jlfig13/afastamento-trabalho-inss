@@ -4,7 +4,7 @@ Pipeline de dados no Databricks para análise de afastamentos do trabalho utiliz
 
 ## Resultados em Destaque
 
-Competência: **junho de 2023** | Total: **8.629.546 registros de benefício**
+Período: **jun/2023 a jul/2026** (28 competências) | Total: **8.629.546 registros de afastamento**
 
 | Indicador | Valor |
 | --- | --- |
@@ -37,7 +37,7 @@ O projeto compara diagnósticos associados a transtornos mentais e doenças oste
 
 Os microdados utilizados neste projeto foram obtidos manualmente a partir do portal de Dados Abertos do Governo Federal ([dados.gov.br](https://dados.gov.br/dados/organizacoes/visualizar/instituto-nacional-do-seguro-social)), especificamente do conjunto de dados de benefícios concedidos pelo INSS.
 
-A coleta **não foi automatizada** devido à indisponibilidade da API no momento da criação do pipeline. O download foi realizado de forma manual e o arquivo CSV resultante foi carregado diretamente na camada Bronze do pipeline.
+A coleta **não foi automatizada** devido à indisponibilidade da API no momento da criação do pipeline. O download foi realizado de forma manual e os 37 arquivos CSV (um por competência) foram carregados diretamente na camada Bronze do pipeline.
 
 > **Nota:** Quando a API dos Dados Abertos estiver disponível, recomenda-se substituir a ingestão manual por um processo automatizado (ex.: Auto Loader ou job agendado) para garantir atualizações periódicas e rastreabilidade.
 
@@ -56,7 +56,7 @@ Silver  →  limpeza + regras de negócio
 Gold    →  modelo estrela (1 fato + 5 dimensões)
     │
     ▼
-Dashboard AI/BI  →  8 páginas analíticas
+Dashboard AI/BI  →  7 páginas analíticas
 ```
 
 ### Tabelas Gold (Unity Catalog)
@@ -83,7 +83,7 @@ Dashboard AI/BI  →  8 páginas analíticas
 O projeto inclui um dashboard AI/BI publicado no Databricks, com:
 
 - **Relationship graph** conectando a tabela fato (`fato_afastamentos`) a 5 dimensões via chaves surrogate
-- **8 páginas analíticas:** Visão Geral, Perfil dos Registros, Atividade Econômica, Qualidade dos Dados, Natureza do Afastamento, Diagnósticos, Geografia de Residência e Global Filters
+- **7 páginas analíticas:** Visão Geral, Diagnósticos, Natureza do Afastamento, Geografia de Residência, Perfil dos Registros, Atividade Econômica e Qualidade dos Dados
 
 ### Decisões de Modelagem
 
@@ -108,4 +108,4 @@ O projeto inclui um dashboard AI/BI publicado no Databricks, com:
 | 5 | `05_gold_modelo_analitico` | modelo estrela Gold (1 fato + 5 dimensões) |
 | 6 | `06_analise_visualizacao` | análises e visualizações |
 
-> **Nota:** O dataset contém apenas a competência de junho/2023. Para justificar análises temporais e agendamento recorrente, carregue múltiplas competências.
+> **Nota:** O dataset cobre 28 competências consecutivas (jun/2023 a jul/2026), permitindo análises temporais e comparativos ano a ano.
