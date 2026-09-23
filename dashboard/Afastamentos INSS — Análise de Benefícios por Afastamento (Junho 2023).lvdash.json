@@ -1,84 +1,6 @@
 {
   "datasets": [
     {
-      "name": "cid_dist",
-      "displayName": "Distribuição por Grupo de CID",
-      "queryLines": [
-        "SELECT\n",
-        "  c.cid_grupo_desc,\n",
-        "  SUM(f.qtd_beneficios) as qtd_registros\n",
-        "FROM\n",
-        "  fato_afastamentos f\n",
-        "    JOIN dim_cid c\n",
-        "      ON f.cid_sk = c.cid_sk\n",
-        "GROUP BY\n",
-        "  c.cid_grupo_desc\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "kpis",
-      "displayName": "KPIs Executivos",
-      "queryLines": [
-        "SELECT\n",
-        "  SUM(qtd_beneficios) as total_afastamentos,\n",
-        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  SUM(ind_acidentario) as qtd_acidentario,\n",
-        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias,\n",
-        "  ROUND(AVG(qt_sm_rmi), 2) as rmi_media_sm\n",
-        "FROM\n",
-        "  fato_afastamentos"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "osteomuscular",
-      "displayName": "Osteomuscular por Perfil",
-      "queryLines": [
-        "SELECT\n",
-        "  faixa_etaria,\n",
-        "  sexo,\n",
-        "  SUM(qtd_beneficios) as qtd_registros\n",
-        "FROM\n",
-        "  fato_afastamentos\n",
-        "WHERE\n",
-        "  ind_osteomuscular = 1\n",
-        "GROUP BY\n",
-        "  faixa_etaria,\n",
-        "  sexo\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "saude_mental",
-      "displayName": "Saúde Mental por Perfil",
-      "queryLines": [
-        "SELECT\n",
-        "  faixa_etaria,\n",
-        "  sexo,\n",
-        "  SUM(qtd_beneficios) as qtd_registros\n",
-        "FROM\n",
-        "  fato_afastamentos\n",
-        "WHERE\n",
-        "  ind_saude_mental = 1\n",
-        "GROUP BY\n",
-        "  faixa_etaria,\n",
-        "  sexo\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
       "name": "natureza",
       "displayName": "Distribuição por Natureza do Afastamento",
       "queryLines": [
@@ -91,134 +13,6 @@
         "      ON f.especie_sk = e.especie_sk\n",
         "GROUP BY\n",
         "  e.natureza_afastamento_desc\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "uf_dist",
-      "displayName": "Distribuição por UF de Residência",
-      "queryLines": [
-        "SELECT\n",
-        "  g.uf_sigla,\n",
-        "  g.uf_nome,\n",
-        "  SUM(f.qtd_beneficios) as qtd_registros,\n",
-        "  SUM(f.ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(f.ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  SUM(f.ind_acidentario) as qtd_acidentario\n",
-        "FROM\n",
-        "  fato_afastamentos f\n",
-        "    JOIN dim_geografia g\n",
-        "      ON f.geografia_sk = g.geografia_sk\n",
-        "GROUP BY\n",
-        "  g.uf_sigla,\n",
-        "  g.uf_nome\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "faixa_etaria",
-      "displayName": "Perfil por Faixa Etária",
-      "queryLines": [
-        "SELECT\n",
-        "  faixa_etaria,\n",
-        "  SUM(qtd_beneficios) as qtd_registros,\n",
-        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  SUM(ind_acidentario) as qtd_acidentario,\n",
-        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias,\n",
-        "  ROUND(AVG(qt_sm_rmi), 2) as rmi_media_sm\n",
-        "FROM\n",
-        "  fato_afastamentos\n",
-        "GROUP BY\n",
-        "  faixa_etaria\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "forma_filiacao",
-      "displayName": "Perfil por Forma de Filiação",
-      "queryLines": [
-        "SELECT\n",
-        "  forma_filiacao,\n",
-        "  SUM(qtd_beneficios) as qtd_registros,\n",
-        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  SUM(ind_acidentario) as qtd_acidentario,\n",
-        "  ROUND(AVG(duracao_beneficio_dias), 2) as duracao_media_dias\n",
-        "FROM\n",
-        "  fato_afastamentos\n",
-        "GROUP BY\n",
-        "  forma_filiacao\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "especie",
-      "displayName": "Distribuição por Espécie",
-      "queryLines": [
-        "SELECT\n",
-        "  e.especie_desc,\n",
-        "  e.natureza_afastamento_desc,\n",
-        "  SUM(f.qtd_beneficios) as qtd_registros\n",
-        "FROM\n",
-        "  fato_afastamentos f\n",
-        "    JOIN dim_especie e\n",
-        "      ON f.especie_sk = e.especie_sk\n",
-        "GROUP BY\n",
-        "  e.especie_desc,\n",
-        "  e.natureza_afastamento_desc\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "cnae_cobertura",
-      "displayName": "Cobertura do CNAE",
-      "queryLines": [
-        "SELECT\n",
-        "  SUM(f.qtd_beneficios) as total_registros,\n",
-        "  SUM(\n",
-        "    CASE\n",
-        "      WHEN a.ind_cnae_informado = 1 THEN f.qtd_beneficios\n",
-        "      ELSE 0\n",
-        "    END\n",
-        "  ) as total_com_cnae\n",
-        "FROM\n",
-        "  fato_afastamentos f\n",
-        "    LEFT JOIN dim_atividade a\n",
-        "      ON f.atividade_sk = a.atividade_sk"
-      ],
-      "catalog": "afastamento_inss",
-      "schema": "gold"
-    },
-    {
-      "name": "sexo",
-      "displayName": "Perfil por Sexo",
-      "queryLines": [
-        "SELECT\n",
-        "  sexo,\n",
-        "  SUM(qtd_beneficios) as qtd_registros,\n",
-        "  SUM(ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  SUM(ind_acidentario) as qtd_acidentario\n",
-        "FROM\n",
-        "  fato_afastamentos\n",
-        "GROUP BY\n",
-        "  sexo\n",
         "ORDER BY\n",
         "  qtd_registros DESC"
       ],
@@ -273,46 +67,214 @@
       "schema": "gold"
     },
     {
-      "name": "cnae_ramo",
-      "displayName": "Distribuição por Ramo de Atividade",
+      "name": "dim_tempo",
+      "displayName": "Dim Tempo",
       "queryLines": [
         "SELECT\n",
-        "  a.ramo_atividade,\n",
-        "  SUM(f.qtd_beneficios) as qtd_registros,\n",
-        "  SUM(f.ind_saude_mental) as qtd_saude_mental,\n",
-        "  SUM(f.ind_osteomuscular) as qtd_osteomuscular,\n",
-        "  ROUND(AVG(f.duracao_beneficio_dias), 2) as duracao_media_dias\n",
+        "  tempo_sk,\n",
+        "  competencia_concessao,\n",
+        "  dt_competencia,\n",
+        "  ano_competencia,\n",
+        "  mes_competencia,\n",
+        "  nome_mes,\n",
+        "  trimestre,\n",
+        "  semestre,\n",
+        "  ano_mes_competencia\n",
         "FROM\n",
-        "  fato_afastamentos f\n",
-        "    JOIN dim_atividade a\n",
-        "      ON f.atividade_sk = a.atividade_sk\n",
-        "WHERE\n",
-        "  a.ind_cnae_informado = 1\n",
-        "GROUP BY\n",
-        "  a.ramo_atividade\n",
-        "ORDER BY\n",
-        "  qtd_registros DESC"
+        "  dim_tempo"
       ],
       "catalog": "afastamento_inss",
       "schema": "gold"
     },
     {
-      "name": "temp_especie_outros",
-      "displayName": "Espécies em Outros (temp)",
+      "name": "dim_cid",
+      "displayName": "Dim CID",
       "queryLines": [
         "SELECT\n",
+        "  cid_sk,\n",
+        "  cid_cod,\n",
+        "  cid_desc,\n",
+        "  cid_capitulo,\n",
+        "  cid_grupo,\n",
+        "  cid_grupo_desc,\n",
+        "  cid_status,\n",
+        "  cid_status_desc\n",
+        "FROM\n",
+        "  dim_cid"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "fato",
+      "displayName": "Fato Afastamentos",
+      "queryLines": [
+        "SELECT\n",
+        "  fato_sk,\n",
+        "  tempo_sk,\n",
+        "  cid_sk,\n",
+        "  especie_sk,\n",
+        "  geografia_sk,\n",
+        "  atividade_sk,\n",
+        "  dt_dib,\n",
+        "  dt_ddb,\n",
+        "  dt_dcb,\n",
+        "  duracao_beneficio_dias,\n",
+        "  qtd_beneficios,\n",
+        "  ind_cid_informado,\n",
+        "  ind_saude_mental,\n",
+        "  ind_osteomuscular,\n",
+        "  ind_cardiovascular,\n",
+        "  ind_respiratorio,\n",
+        "  ind_acidentario,\n",
+        "  ind_afastamento_saude_mental,\n",
+        "  ind_afastamento_osteomuscular,\n",
+        "  ind_afastamento_cardiovascular,\n",
+        "  ind_afastamento_respiratorio,\n",
+        "  dt_nascimento,\n",
+        "  idade_na_competencia,\n",
+        "  faixa_etaria,\n",
+        "  sexo,\n",
+        "  clientela,\n",
+        "  forma_filiacao,\n",
+        "  grau_instrucao,\n",
+        "  qt_anos_contribuicao,\n",
+        "  qt_sm_rmi\n",
+        "FROM\n",
+        "  fato_afastamentos"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "dim_especie",
+      "displayName": "Dim Especie",
+      "queryLines": [
+        "SELECT\n",
+        "  especie_sk,\n",
         "  especie_cod,\n",
         "  especie_desc,\n",
-        "  COUNT(*) as qtd\n",
+        "  tipo_beneficio,\n",
+        "  tipo_beneficio_desc,\n",
+        "  natureza_afastamento,\n",
+        "  natureza_afastamento_desc,\n",
+        "  ind_especie_afastamento,\n",
+        "  ind_especie_acidentaria\n",
         "FROM\n",
-        "  afastamento_inss.silver.beneficios_concedidos\n",
-        "WHERE\n",
-        "  tipo_beneficio = 'outros'\n",
-        "GROUP BY\n",
-        "  especie_cod,\n",
-        "  especie_desc\n",
-        "ORDER BY\n",
-        "  qtd DESC"
+        "  dim_especie"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "dim_atividade",
+      "displayName": "Dim Atividade",
+      "queryLines": [
+        "SELECT\n",
+        "  atividade_sk,\n",
+        "  ramo_atividade,\n",
+        "  cnae_2023,\n",
+        "  cnae_2024,\n",
+        "  cnae_referencia,\n",
+        "  cnae_origem,\n",
+        "  status_cnae,\n",
+        "  ind_cnae_informado\n",
+        "FROM\n",
+        "  dim_atividade"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    },
+    {
+      "name": "dim_geografia",
+      "displayName": "Dim Geografia",
+      "queryLines": [
+        "SELECT\n",
+        "  geografia_sk,\n",
+        "  mun_cod,\n",
+        "  mun_nome,\n",
+        "  uf_sigla,\n",
+        "  uf_nome,\n",
+        "  status_geografia\n",
+        "FROM\n",
+        "  dim_geografia"
+      ],
+      "catalog": "afastamento_inss",
+      "schema": "gold"
+    }
+  ],
+  "relationshipGraphs": [
+    {
+      "sources": [
+        {
+          "name": "Distribuio_por_Natureza_do_Afastamento",
+          "datasetName": "natureza"
+        },
+        {
+          "name": "Indicadores_de_Qualidade_dos_Dados",
+          "datasetName": "qualidade"
+        },
+        {
+          "name": "Dim_Tempo",
+          "datasetName": "dim_tempo"
+        },
+        {
+          "name": "Dim_CID",
+          "datasetName": "dim_cid"
+        },
+        {
+          "name": "Fato_Afastamentos",
+          "datasetName": "fato"
+        },
+        {
+          "name": "Dim_Especie",
+          "datasetName": "dim_especie"
+        },
+        {
+          "name": "Dim_Atividade",
+          "datasetName": "dim_atividade"
+        },
+        {
+          "name": "Dim_Geografia",
+          "datasetName": "dim_geografia"
+        }
+      ],
+      "relationships": [
+        {
+          "name": "relationship_0",
+          "from": "Fato_Afastamentos",
+          "to": "Dim_Tempo",
+          "on": "`Fato_Afastamentos`.`tempo_sk` = `Dim_Tempo`.`tempo_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_1",
+          "from": "Fato_Afastamentos",
+          "to": "Dim_CID",
+          "on": "`Fato_Afastamentos`.`cid_sk` = `Dim_CID`.`cid_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_2",
+          "from": "Fato_Afastamentos",
+          "to": "Dim_Especie",
+          "on": "`Fato_Afastamentos`.`especie_sk` = `Dim_Especie`.`especie_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_3",
+          "from": "Fato_Afastamentos",
+          "to": "Dim_Geografia",
+          "on": "`Fato_Afastamentos`.`geografia_sk` = `Dim_Geografia`.`geografia_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_4",
+          "from": "Fato_Afastamentos",
+          "to": "Dim_Atividade",
+          "on": "`Fato_Afastamentos`.`atividade_sk` = `Dim_Atividade`.`atividade_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        }
       ]
     }
   ],
@@ -328,11 +290,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(total_afastamentos)",
-                      "expression": "SUM(`total_afastamentos`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -342,13 +303,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Total de Registros"
+                "title": {
+                  "value": "Total de Registros",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(total_afastamentos)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "rowNumber": 0
                 }
               },
@@ -371,11 +335,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(qtd_saude_mental)",
-                      "expression": "SUM(`qtd_saude_mental`)"
+                      "name": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_saude_mental`)"
                     }
                   ],
                   "disaggregated": false
@@ -385,13 +348,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Saúde Mental"
+                "title": {
+                  "value": "Saúde Mental",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(qtd_saude_mental)",
+                  "fieldName": "sum(Fato_Afastamentos__ind_saude_mental)",
                   "rowNumber": 0
                 }
               },
@@ -414,11 +380,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(qtd_osteomuscular)",
-                      "expression": "SUM(`qtd_osteomuscular`)"
+                      "name": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_osteomuscular`)"
                     }
                   ],
                   "disaggregated": false
@@ -428,13 +393,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Osteomuscular"
+                "title": {
+                  "value": "Osteomuscular",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(qtd_osteomuscular)",
+                  "fieldName": "sum(Fato_Afastamentos__ind_osteomuscular)",
                   "rowNumber": 0
                 }
               },
@@ -457,11 +425,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(qtd_acidentario)",
-                      "expression": "SUM(`qtd_acidentario`)"
+                      "name": "sum(Fato_Afastamentos__ind_acidentario)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_acidentario`)"
                     }
                   ],
                   "disaggregated": false
@@ -471,13 +438,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Natureza Acidentária"
+                "title": {
+                  "value": "Natureza Acidentária",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(qtd_acidentario)",
+                  "fieldName": "sum(Fato_Afastamentos__ind_acidentario)",
                   "rowNumber": 0
                 }
               },
@@ -500,11 +470,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(duracao_media_dias)",
-                      "expression": "SUM(`duracao_media_dias`)"
+                      "name": "avg(Fato_Afastamentos__duracao_beneficio_dias)",
+                      "expression": "AVG(`Fato_Afastamentos`.`duracao_beneficio_dias`)"
                     }
                   ],
                   "disaggregated": false
@@ -514,14 +483,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Duração Média (dias)"
+                "title": {
+                  "value": "Duração Média (dias)",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(duracao_media_dias)",
-                  "rowNumber": 0
+                  "fieldName": "avg(Fato_Afastamentos__duracao_beneficio_dias)"
                 }
               },
               "data": {
@@ -543,11 +514,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "kpis",
                   "fields": [
                     {
-                      "name": "sum(rmi_media_sm)",
-                      "expression": "SUM(`rmi_media_sm`)"
+                      "name": "avg(Fato_Afastamentos__qt_sm_rmi)",
+                      "expression": "AVG(`Fato_Afastamentos`.`qt_sm_rmi`)"
                     }
                   ],
                   "disaggregated": false
@@ -557,14 +527,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "RMI Média (SM)"
+                "title": {
+                  "value": "RMI Média (SM)",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(rmi_media_sm)",
-                  "rowNumber": 0
+                  "fieldName": "avg(Fato_Afastamentos__qt_sm_rmi)"
                 }
               },
               "data": {
@@ -586,15 +558,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cid_dist",
                   "fields": [
                     {
-                      "name": "cid_grupo_desc",
-                      "expression": "`cid_grupo_desc`"
+                      "name": "Dim_CID__cid_grupo_desc",
+                      "expression": "`Dim_CID`.`cid_grupo_desc`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -604,27 +575,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por Grupo de CID"
+                "title": {
+                  "value": "Distribuição por Grupo de CID",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "cid_grupo_desc",
+                  "fieldName": "Dim_CID__cid_grupo_desc",
                   "displayName": "cid_grupo_desc",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "cid_grupo_desc",
+                  "fieldName": "Dim_CID__cid_grupo_desc",
                   "displayName": "cid_grupo_desc",
                   "scale": {
                     "type": "categorical"
@@ -642,6 +616,327 @@
             "width": 12,
             "height": 8
           }
+        },
+        {
+          "widget": {
+            "name": "line_evolucao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Dim_Tempo__ano_mes_competencia",
+                      "expression": "`Dim_Tempo`.`ano_mes_competencia`"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Evolução de Afastamentos por Competência"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Dim_Tempo__ano_mes_competencia",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "line_cid_tempo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Dim_CID__cid_grupo_desc",
+                      "expression": "`Dim_CID`.`cid_grupo_desc`"
+                    },
+                    {
+                      "name": "Dim_Tempo__ano_mes_competencia",
+                      "expression": "`Dim_Tempo`.`ano_mes_competencia`"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Evolução por Grupo CID ao Longo do Tempo"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Dim_Tempo__ano_mes_competencia",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Dim_CID__cid_grupo_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "line_saude_tempo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Dim_Tempo__ano_mes_competencia",
+                      "expression": "`Dim_Tempo`.`ano_mes_competencia`"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_saude_mental`)"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_osteomuscular`)"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__ind_acidentario)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_acidentario`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Evolução: Saúde Mental vs Osteomuscular vs Acidentário"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Dim_Tempo__ano_mes_competencia",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fields": [
+                    {
+                      "fieldName": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "displayName": "Saúde Mental"
+                    },
+                    {
+                      "fieldName": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "displayName": "Osteomuscular"
+                    },
+                    {
+                      "fieldName": "sum(Fato_Afastamentos__ind_acidentario)",
+                      "displayName": "Acidentário"
+                    }
+                  ],
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 15,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "line_natureza_tempo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Dim_Especie__natureza_afastamento_desc",
+                      "expression": "`Dim_Especie`.`natureza_afastamento_desc`"
+                    },
+                    {
+                      "name": "Dim_Tempo__ano_mes_competencia",
+                      "expression": "`Dim_Tempo`.`ano_mes_competencia`"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Evolução por Natureza do Afastamento"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Dim_Tempo__ano_mes_competencia",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Dim_Especie__natureza_afastamento_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "line_sexo_tempo",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Fato_Afastamentos__sexo",
+                      "expression": "`Fato_Afastamentos`.`sexo`"
+                    },
+                    {
+                      "name": "Dim_Tempo__ano_mes_competencia",
+                      "expression": "`Dim_Tempo`.`ano_mes_competencia`"
+                    },
+                    {
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Evolução por Sexo"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "Dim_Tempo__ano_mes_competencia",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Fato_Afastamentos__sexo",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 21,
+            "width": 6,
+            "height": 6
+          }
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS",
@@ -658,15 +953,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cid_dist",
                   "fields": [
                     {
-                      "name": "cid_grupo_desc",
-                      "expression": "`cid_grupo_desc`"
+                      "name": "Dim_CID__cid_grupo_desc",
+                      "expression": "`Dim_CID`.`cid_grupo_desc`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -676,27 +970,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por Grupo de CID"
+                "title": {
+                  "value": "Distribuição por Grupo de CID",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "cid_grupo_desc",
+                  "fieldName": "Dim_CID__cid_grupo_desc",
                   "displayName": "cid_grupo_desc",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "cid_grupo_desc",
+                  "fieldName": "Dim_CID__cid_grupo_desc",
                   "displayName": "cid_grupo_desc",
                   "scale": {
                     "type": "categorical"
@@ -722,19 +1019,23 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "saude_mental",
                   "fields": [
                     {
-                      "name": "sexo",
-                      "expression": "`sexo`"
+                      "name": "Fato_Afastamentos__sexo",
+                      "expression": "`Fato_Afastamentos`.`sexo`"
                     },
                     {
-                      "name": "faixa_etaria",
-                      "expression": "`faixa_etaria`"
+                      "name": "Fato_Afastamentos__faixa_etaria",
+                      "expression": "`Fato_Afastamentos`.`faixa_etaria`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`Fato_Afastamentos`.`ind_saude_mental` = 1"
                     }
                   ],
                   "disaggregated": false
@@ -744,27 +1045,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Saúde Mental por Faixa Etária e Sexo"
+                "title": {
+                  "value": "Saúde Mental por Faixa Etária e Sexo",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "faixa_etaria",
+                  "fieldName": "Fato_Afastamentos__faixa_etaria",
                   "displayName": "faixa_etaria",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "sexo",
+                  "fieldName": "Fato_Afastamentos__sexo",
                   "displayName": "sexo",
                   "scale": {
                     "type": "categorical"
@@ -790,19 +1094,23 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "osteomuscular",
                   "fields": [
                     {
-                      "name": "sexo",
-                      "expression": "`sexo`"
+                      "name": "Fato_Afastamentos__sexo",
+                      "expression": "`Fato_Afastamentos`.`sexo`"
                     },
                     {
-                      "name": "faixa_etaria",
-                      "expression": "`faixa_etaria`"
+                      "name": "Fato_Afastamentos__faixa_etaria",
+                      "expression": "`Fato_Afastamentos`.`faixa_etaria`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`Fato_Afastamentos`.`ind_osteomuscular` = 1"
                     }
                   ],
                   "disaggregated": false
@@ -812,27 +1120,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Osteomuscular por Faixa Etária e Sexo"
+                "title": {
+                  "value": "Osteomuscular por Faixa Etária e Sexo",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "faixa_etaria",
+                  "fieldName": "Fato_Afastamentos__faixa_etaria",
                   "displayName": "faixa_etaria",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "sexo",
+                  "fieldName": "Fato_Afastamentos__sexo",
                   "displayName": "sexo",
                   "scale": {
                     "type": "categorical"
@@ -866,15 +1177,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "natureza",
                   "fields": [
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     },
                     {
-                      "name": "natureza_afastamento_desc",
-                      "expression": "`natureza_afastamento_desc`"
+                      "name": "Dim_Especie__natureza_afastamento_desc",
+                      "expression": "`Dim_Especie`.`natureza_afastamento_desc`"
                     }
                   ],
                   "disaggregated": false
@@ -884,20 +1194,23 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por Natureza"
+                "title": {
+                  "value": "Distribuição por Natureza",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "pie",
               "encodings": {
                 "angle": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "scale": {
                     "type": "quantitative"
                   },
                   "displayName": "qtd_registros"
                 },
                 "color": {
-                  "fieldName": "natureza_afastamento_desc",
+                  "fieldName": "Dim_Especie__natureza_afastamento_desc",
                   "displayName": "natureza_afastamento_desc",
                   "scale": {
                     "type": "categorical"
@@ -923,19 +1236,18 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "especie",
                   "fields": [
                     {
-                      "name": "natureza_afastamento_desc",
-                      "expression": "`natureza_afastamento_desc`"
+                      "name": "Dim_Especie__natureza_afastamento_desc",
+                      "expression": "`Dim_Especie`.`natureza_afastamento_desc`"
                     },
                     {
-                      "name": "especie_desc",
-                      "expression": "`especie_desc`"
+                      "name": "Dim_Especie__especie_desc",
+                      "expression": "`Dim_Especie`.`especie_desc`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -945,27 +1257,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por Espécie de Benefício"
+                "title": {
+                  "value": "Distribuição por Espécie de Benefício",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "especie_desc",
+                  "fieldName": "Dim_Especie__especie_desc",
                   "displayName": "especie_desc",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "natureza_afastamento_desc",
+                  "fieldName": "Dim_Especie__natureza_afastamento_desc",
                   "displayName": "natureza_afastamento_desc",
                   "scale": {
                     "type": "categorical"
@@ -999,15 +1314,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "uf_dist",
                   "fields": [
                     {
-                      "name": "uf_sigla",
-                      "expression": "`uf_sigla`"
+                      "name": "Dim_Geografia__uf_sigla",
+                      "expression": "`Dim_Geografia`.`uf_sigla`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -1017,27 +1331,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por UF de Residência"
+                "title": {
+                  "value": "Distribuição por UF de Residência",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "uf_sigla",
+                  "fieldName": "Dim_Geografia__uf_sigla",
                   "displayName": "uf_sigla",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "uf_sigla",
+                  "fieldName": "Dim_Geografia__uf_sigla",
                   "displayName": "uf_sigla",
                   "scale": {
                     "type": "categorical"
@@ -1063,63 +1380,65 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "uf_dist",
                   "fields": [
                     {
-                      "name": "uf_sigla",
-                      "expression": "`uf_sigla`"
+                      "name": "Dim_Geografia__uf_sigla",
+                      "expression": "`Dim_Geografia`.`uf_sigla`"
                     },
                     {
-                      "name": "uf_nome",
-                      "expression": "`uf_nome`"
+                      "name": "Dim_Geografia__uf_nome",
+                      "expression": "`Dim_Geografia`.`uf_nome`"
                     },
                     {
-                      "name": "qtd_registros",
-                      "expression": "`qtd_registros`"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     },
                     {
-                      "name": "qtd_saude_mental",
-                      "expression": "`qtd_saude_mental`"
+                      "name": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_saude_mental`)"
                     },
                     {
-                      "name": "qtd_osteomuscular",
-                      "expression": "`qtd_osteomuscular`"
+                      "name": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_osteomuscular`)"
                     },
                     {
-                      "name": "qtd_acidentario",
-                      "expression": "`qtd_acidentario`"
+                      "name": "sum(Fato_Afastamentos__ind_acidentario)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_acidentario`)"
                     }
                   ],
-                  "disaggregated": true
+                  "disaggregated": false
                 }
               }
             ],
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Detalhamento por UF"
+                "title": {
+                  "value": "Detalhamento por UF",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "table",
               "encodings": {
                 "columns": [
                   {
-                    "fieldName": "uf_sigla"
+                    "fieldName": "Dim_Geografia__uf_sigla"
                   },
                   {
-                    "fieldName": "uf_nome"
+                    "fieldName": "Dim_Geografia__uf_nome"
                   },
                   {
-                    "fieldName": "qtd_registros"
+                    "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)"
                   },
                   {
-                    "fieldName": "qtd_saude_mental"
+                    "fieldName": "sum(Fato_Afastamentos__ind_saude_mental)"
                   },
                   {
-                    "fieldName": "qtd_osteomuscular"
+                    "fieldName": "sum(Fato_Afastamentos__ind_osteomuscular)"
                   },
                   {
-                    "fieldName": "qtd_acidentario"
+                    "fieldName": "sum(Fato_Afastamentos__ind_acidentario)"
                   }
                 ]
               },
@@ -1150,15 +1469,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "faixa_etaria",
                   "fields": [
                     {
-                      "name": "faixa_etaria",
-                      "expression": "`faixa_etaria`"
+                      "name": "Fato_Afastamentos__faixa_etaria",
+                      "expression": "`Fato_Afastamentos`.`faixa_etaria`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -1168,27 +1486,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Registros por Faixa Etária"
+                "title": {
+                  "value": "Registros por Faixa Etária",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "faixa_etaria",
+                  "fieldName": "Fato_Afastamentos__faixa_etaria",
                   "displayName": "faixa_etaria",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "faixa_etaria",
+                  "fieldName": "Fato_Afastamentos__faixa_etaria",
                   "displayName": "faixa_etaria",
                   "scale": {
                     "type": "categorical"
@@ -1214,15 +1535,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "sexo",
                   "fields": [
                     {
-                      "name": "sexo",
-                      "expression": "`sexo`"
+                      "name": "Fato_Afastamentos__sexo",
+                      "expression": "`Fato_Afastamentos`.`sexo`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -1232,27 +1552,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Registros por Sexo"
+                "title": {
+                  "value": "Registros por Sexo",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "sexo",
+                  "fieldName": "Fato_Afastamentos__sexo",
                   "displayName": "sexo",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "sexo",
+                  "fieldName": "Fato_Afastamentos__sexo",
                   "displayName": "sexo",
                   "scale": {
                     "type": "categorical"
@@ -1278,15 +1601,14 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "forma_filiacao",
                   "fields": [
                     {
-                      "name": "forma_filiacao",
-                      "expression": "`forma_filiacao`"
+                      "name": "Fato_Afastamentos__forma_filiacao",
+                      "expression": "`Fato_Afastamentos`.`forma_filiacao`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -1296,27 +1618,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Registros por Forma de Filiação"
+                "title": {
+                  "value": "Registros por Forma de Filiação",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "forma_filiacao",
+                  "fieldName": "Fato_Afastamentos__forma_filiacao",
                   "displayName": "forma_filiacao",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "forma_filiacao",
+                  "fieldName": "Fato_Afastamentos__forma_filiacao",
                   "displayName": "forma_filiacao",
                   "scale": {
                     "type": "categorical"
@@ -1342,70 +1667,72 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "faixa_etaria",
                   "fields": [
                     {
-                      "name": "faixa_etaria",
-                      "expression": "`faixa_etaria`"
+                      "name": "Fato_Afastamentos__faixa_etaria",
+                      "expression": "`Fato_Afastamentos`.`faixa_etaria`"
                     },
                     {
-                      "name": "qtd_registros",
-                      "expression": "`qtd_registros`"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     },
                     {
-                      "name": "qtd_saude_mental",
-                      "expression": "`qtd_saude_mental`"
+                      "name": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_saude_mental`)"
                     },
                     {
-                      "name": "qtd_osteomuscular",
-                      "expression": "`qtd_osteomuscular`"
+                      "name": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_osteomuscular`)"
                     },
                     {
-                      "name": "qtd_acidentario",
-                      "expression": "`qtd_acidentario`"
+                      "name": "sum(Fato_Afastamentos__ind_acidentario)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_acidentario`)"
                     },
                     {
-                      "name": "duracao_media_dias",
-                      "expression": "`duracao_media_dias`"
+                      "name": "avg(Fato_Afastamentos__duracao_beneficio_dias)",
+                      "expression": "AVG(`Fato_Afastamentos`.`duracao_beneficio_dias`)"
                     },
                     {
-                      "name": "rmi_media_sm",
-                      "expression": "`rmi_media_sm`"
+                      "name": "avg(Fato_Afastamentos__qt_sm_rmi)",
+                      "expression": "AVG(`Fato_Afastamentos`.`qt_sm_rmi`)"
                     }
                   ],
-                  "disaggregated": true
+                  "disaggregated": false
                 }
               }
             ],
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Perfil Demográfico Detalhado"
+                "title": {
+                  "value": "Perfil Demográfico Detalhado",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "table",
               "encodings": {
                 "columns": [
                   {
-                    "fieldName": "faixa_etaria"
+                    "fieldName": "Fato_Afastamentos__faixa_etaria"
                   },
                   {
-                    "fieldName": "qtd_registros"
+                    "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)"
                   },
                   {
-                    "fieldName": "qtd_saude_mental"
+                    "fieldName": "sum(Fato_Afastamentos__ind_saude_mental)"
                   },
                   {
-                    "fieldName": "qtd_osteomuscular"
+                    "fieldName": "sum(Fato_Afastamentos__ind_osteomuscular)"
                   },
                   {
-                    "fieldName": "qtd_acidentario"
+                    "fieldName": "sum(Fato_Afastamentos__ind_acidentario)"
                   },
                   {
-                    "fieldName": "duracao_media_dias"
+                    "fieldName": "avg(Fato_Afastamentos__duracao_beneficio_dias)"
                   },
                   {
-                    "fieldName": "rmi_media_sm"
+                    "fieldName": "avg(Fato_Afastamentos__qt_sm_rmi)"
                   }
                 ]
               },
@@ -1436,11 +1763,10 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cnae_cobertura",
                   "fields": [
                     {
-                      "name": "sum(total_registros)",
-                      "expression": "SUM(`total_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     }
                   ],
                   "disaggregated": false
@@ -1450,13 +1776,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Total de Registros"
+                "title": {
+                  "value": "Total de Registros",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(total_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "rowNumber": 0
                 }
               },
@@ -1479,11 +1808,15 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cnae_cobertura",
                   "fields": [
                     {
-                      "name": "sum(total_com_cnae)",
-                      "expression": "SUM(`total_com_cnae`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`Dim_Atividade`.`ind_cnae_informado` = 1"
                     }
                   ],
                   "disaggregated": false
@@ -1493,14 +1826,16 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Registros com CNAE Informado"
+                "title": {
+                  "value": "Registros com CNAE Informado",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "counter",
               "encodings": {
                 "value": {
-                  "fieldName": "sum(total_com_cnae)",
-                  "rowNumber": 0
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)"
                 }
               },
               "data": {
@@ -1522,15 +1857,19 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cnae_ramo",
                   "fields": [
                     {
-                      "name": "ramo_atividade",
-                      "expression": "`ramo_atividade`"
+                      "name": "Dim_Atividade__ramo_atividade",
+                      "expression": "`Dim_Atividade`.`ramo_atividade`"
                     },
                     {
-                      "name": "sum(qtd_registros)",
-                      "expression": "SUM(`qtd_registros`)"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`Dim_Atividade`.`ind_cnae_informado` = 1"
                     }
                   ],
                   "disaggregated": false
@@ -1540,27 +1879,30 @@
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Distribuição por Ramo de Atividade"
+                "title": {
+                  "value": "Distribuição por Ramo de Atividade",
+                  "fields": []
+                }
               },
               "version": 3,
               "widgetType": "bar",
               "encodings": {
                 "x": {
-                  "fieldName": "ramo_atividade",
+                  "fieldName": "Dim_Atividade__ramo_atividade",
                   "displayName": "ramo_atividade",
                   "scale": {
                     "type": "categorical"
                   }
                 },
                 "y": {
-                  "fieldName": "sum(qtd_registros)",
+                  "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)",
                   "displayName": "qtd_registros",
                   "scale": {
                     "type": "quantitative"
                   }
                 },
                 "color": {
-                  "fieldName": "ramo_atividade",
+                  "fieldName": "Dim_Atividade__ramo_atividade",
                   "displayName": "ramo_atividade",
                   "scale": {
                     "type": "categorical"
@@ -1586,56 +1928,63 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "cnae_ramo",
                   "fields": [
                     {
-                      "name": "ramo_atividade",
-                      "expression": "`ramo_atividade`"
+                      "name": "Dim_Atividade__ramo_atividade",
+                      "expression": "`Dim_Atividade`.`ramo_atividade`"
                     },
                     {
-                      "name": "qtd_registros",
-                      "expression": "`qtd_registros`"
+                      "name": "sum(Fato_Afastamentos__qtd_beneficios)",
+                      "expression": "SUM(`Fato_Afastamentos`.`qtd_beneficios`)"
                     },
                     {
-                      "name": "qtd_saude_mental",
-                      "expression": "`qtd_saude_mental`"
+                      "name": "sum(Fato_Afastamentos__ind_saude_mental)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_saude_mental`)"
                     },
                     {
-                      "name": "qtd_osteomuscular",
-                      "expression": "`qtd_osteomuscular`"
+                      "name": "sum(Fato_Afastamentos__ind_osteomuscular)",
+                      "expression": "SUM(`Fato_Afastamentos`.`ind_osteomuscular`)"
                     },
                     {
-                      "name": "duracao_media_dias",
-                      "expression": "`duracao_media_dias`"
+                      "name": "avg(Fato_Afastamentos__duracao_beneficio_dias)",
+                      "expression": "AVG(`Fato_Afastamentos`.`duracao_beneficio_dias`)"
                     }
                   ],
-                  "disaggregated": true
+                  "filters": [
+                    {
+                      "expression": "`Dim_Atividade`.`ind_cnae_informado` = 1"
+                    }
+                  ],
+                  "disaggregated": false
                 }
               }
             ],
             "spec": {
               "frame": {
                 "showTitle": true,
-                "title": "Detalhamento por Ramo"
+                "title": {
+                  "value": "Detalhamento por Ramo",
+                  "fields": []
+                }
               },
               "version": 2,
               "widgetType": "table",
               "encodings": {
                 "columns": [
                   {
-                    "fieldName": "ramo_atividade"
+                    "fieldName": "Dim_Atividade__ramo_atividade"
                   },
                   {
-                    "fieldName": "qtd_registros"
+                    "fieldName": "sum(Fato_Afastamentos__qtd_beneficios)"
                   },
                   {
-                    "fieldName": "qtd_saude_mental"
+                    "fieldName": "sum(Fato_Afastamentos__ind_saude_mental)"
                   },
                   {
-                    "fieldName": "qtd_osteomuscular"
+                    "fieldName": "sum(Fato_Afastamentos__ind_osteomuscular)"
                   },
                   {
-                    "fieldName": "duracao_media_dias"
+                    "fieldName": "avg(Fato_Afastamentos__duracao_beneficio_dias)"
                   }
                 ]
               },
@@ -1792,21 +2141,48 @@
         {
           "widget": {
             "name": "41eff546",
+            "queries": [
+              {
+                "name": "_Dim_Tempo__dt_competencia",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "Dim_Tempo__dt_competencia",
+                      "expression": "`Dim_Tempo`.`dt_competencia`"
+                    },
+                    {
+                      "name": "Dim_Tempo__dt_competencia_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
             "spec": {
               "version": 2,
               "frame": {
-                "showTitle": true
+                "showTitle": true,
+                "title": {
+                  "fields": [],
+                  "value": "Período de Competência"
+                }
               },
-              "widgetType": "filter-date-picker",
+              "widgetType": "filter-date-range-picker",
               "encodings": {
-                "fields": []
+                "fields": [
+                  {
+                    "fieldName": "Dim_Tempo__dt_competencia",
+                    "queryName": "_Dim_Tempo__dt_competencia"
+                  }
+                ]
               }
             }
           },
           "position": {
             "x": 0,
             "y": 0,
-            "width": 1,
+            "width": 3,
             "height": 2
           }
         }
