@@ -4,7 +4,9 @@ Pipeline de dados no Databricks para análise de afastamentos do trabalho utiliz
 
 ## Resultados em Destaque
 
-Período: **jun/2023 a jul/2026** (28 competências) | Total: **8.629.546 registros de afastamento**
+Período: **jun/2023 a jul/2026** (38 competências consecutivas)
+
+> **Atenção:** os indicadores abaixo são da execução anterior à correção dos layouts dos CSVs e à redefinição de "afastamento" (auxílio-doença, espécies 31 e 91). Serão atualizados após a reexecução do pipeline. Veja `docs/layouts_csv.md`.
 
 | Indicador | Valor |
 | --- | --- |
@@ -37,7 +39,7 @@ O projeto compara diagnósticos associados a transtornos mentais e doenças oste
 
 Os microdados utilizados neste projeto foram obtidos manualmente a partir do portal de Dados Abertos do Governo Federal ([dados.gov.br](https://dados.gov.br/dados/organizacoes/visualizar/instituto-nacional-do-seguro-social)), especificamente do conjunto de dados de benefícios concedidos pelo INSS.
 
-A coleta **não foi automatizada** devido à indisponibilidade da API no momento da criação do pipeline. O download foi realizado de forma manual e os 37 arquivos CSV (um por competência) foram carregados diretamente na camada Bronze do pipeline.
+A coleta **não foi automatizada** devido à indisponibilidade da API no momento da criação do pipeline. O download foi realizado de forma manual e os 38 arquivos CSV (um por competência) foram carregados diretamente na camada Bronze do pipeline.
 
 > **Nota:** Quando a API dos Dados Abertos estiver disponível, recomenda-se substituir a ingestão manual por um processo automatizado (ex.: Auto Loader ou job agendado) para garantir atualizações periódicas e rastreabilidade.
 
@@ -108,4 +110,4 @@ O projeto inclui um dashboard AI/BI publicado no Databricks, com:
 | 5 | `05_gold_modelo_analitico` | modelo estrela Gold (1 fato + 5 dimensões) |
 | 6 | `06_analise_visualizacao` | análises e visualizações |
 
-> **Nota:** O dataset cobre 28 competências consecutivas (jun/2023 a jul/2026), permitindo análises temporais e comparativos ano a ano.
+> **Nota:** O dataset cobre 38 competências consecutivas (jun/2023 a jul/2026), permitindo análises temporais e comparativos ano a ano.

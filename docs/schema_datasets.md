@@ -4,9 +4,9 @@
 
 | Item | Valor |
 |---|---|
-| Nome do arquivo | 37 arquivos CSV (`beneficios_concedidos_AAAAMM.csv`) |
+| Nome do arquivo | 38 arquivos CSV (`beneficios_concedidos_AAAAMM.csv`) |
 | Fonte | Dados abertos do INSS |
-| Competência | jun/2023 a jul/2026 (28 competências) |
+| Competência | jun/2023 a jul/2026 (38 competências) |
 | Quantidade de registros | 23.689.332 |
 | Quantidade de colunas originais | 27 |
 | Delimitador | Ponto e vírgula (`;`) |
@@ -112,10 +112,13 @@ A camada Bronze possui 30 colunas:
 |---|---|---|---|
 | `mun_cod` | `mun_resid` | string | Código do município extraído do início do campo |
 | `mun_nome` | `mun_resid` | string | Trecho geográfico restante após a remoção do código, atualmente contendo UF e nome do município |
+| `cid_cod_invalido` | `cid_cod` | integer | 1 quando o código CID da fonte era inválido (ex.: `N`, `200`, `M5`) e foi anulado; os demais são normalizados (ex.: `M-54` → `M54`, `00F840` → `F840`) |
 | `cid_capitulo` | `cid_cod` | string | Letra inicial do código CID |
-| `cid_grupo` | `cid_cod` | string | Grupo analitico: mental, osteomuscular, cardiovascular, respiratorio, lesoes_causas_externas, digestivo, geniturinario, neoplasias, nervoso, endocrino_metabolico, infecciosas, pele, sentidos, gravidez_parto, congenitas, perinatal, causas_externas, fatores_saude, sintomas, especiais, outros ou nao_informado |
+| `cid_categoria` | `cid_cod` | string | Categoria do CID-10 com 3 caracteres (ex.: `F32` para `F320`) |
+| `cid_grupo` | `cid_cod` | string | Grupo analitico: mental, osteomuscular, cardiovascular, respiratorio, lesoes_causas_externas, digestivo, geniturinario, neoplasias, nervoso, endocrino_metabolico, infecciosas, pele, sentidos, gravidez_parto, congenitas, perinatal, causas_externas, fatores_saude, sintomas, especiais, sangue_imunitario (D50–D89), outros ou nao_informado. O capítulo `D` é dividido por faixa: D00–D48 é neoplasia e D50–D89 é sangue e sistema imunitário |
+| `cid_subgrupo` | `cid_cod` | string | Detalhamento dos grupos mental (`depressao` F32–F33, `ansiedade` F40–F41, `bipolar` F31, `estresse_adaptacao` F43, `esquizofrenia_psicoses` F20–F29, `uso_substancias` F10–F19, `transtornos_organicos` F00–F09, `outros_humor`, `outros_neuroticos`, `outros_mentais`) e osteomuscular (`dorsopatias` M40–M54 ou `outros_osteomusculares`); `nao_aplicavel` nos demais |
 | `cid_status` | `cid_cod` | string | Situação do CID: `informado` ou `nao_informado` |
-| `tipo_beneficio` | `especie_cod` | string | Classificacao em `afastamento`, `aposentadoria`, `pensao`, `assistencial`, `maternidade`, `reclusao`, `sem_especie_definida` ou `outros` |
+| `tipo_beneficio` | `especie_cod` | string | Classificação em `afastamento` (auxílio-doença, espécies 31 e 91), `auxilio_acidente` (36, 94, 95), `aposentadoria_invalidez` (32, 92 e legados 4 e 5), `aposentadoria`, `pensao`, `assistencial`, `maternidade`, `reclusao`, `sem_especie_definida` (valores inválidos na fonte) ou `outros` |
 
 ### 5.1 Regra de derivação do município
 
@@ -158,8 +161,11 @@ A tabela `afastamento_inss.gold.prep_beneficios_bi` mantém o mesmo grão da Sil
 | `faixa_etaria` | `idade_na_competencia` | string | Classificação da idade em faixas |
 | `cid_grupo_desc` | `cid_grupo` | string | Descrição amigável do grupo analítico do CID |
 | `cid_status_desc` | `cid_status` | string | Descrição amigável da disponibilidade do CID |
+| `cid_subgrupo_desc` | `cid_subgrupo` | string | Descrição amigável do subgrupo do CID |
+| `cid_situacao` | `cid_cod`, `tipo_beneficio`, `especie_cod` | string | `informado`; `nao_informado` (deveria existir: afastamento, auxílio-acidente, aposentadoria por invalidez e BPC de pessoa com deficiência sem CID); ou `nao_se_aplica` (pensão, maternidade, aposentadoria por idade/tempo, BPC idoso) |
+| `cid_situacao_desc` | `cid_situacao` | string | Descrição amigável da situação do CID |
 | `tipo_beneficio_desc` | `tipo_beneficio` | string | Descrição amigável da categoria do benefício |
-| `natureza_afastamento` | `especie_cod`, `tipo_beneficio` | string | Natureza previdenciária, acidentária, outras modalidades ou não aplicável |
+| `natureza_afastamento` | `especie_cod`, `tipo_beneficio` | string | Natureza previdenciária (31), acidentária (91), auxílio-acidente (36, 94, 95) ou não aplicável |
 | `natureza_afastamento_desc` | `natureza_afastamento` | string | Descrição amigável da natureza do afastamento |
 | `duracao_beneficio_dias` | `dt_dib`, `dt_dcb` | integer | Diferença em dias entre início e cessação, quando ambas as datas existem |
 | `possui_data_cessacao` | `dt_dcb` | integer | Indicador binário de disponibilidade da data de cessação |
@@ -170,14 +176,15 @@ A tabela `afastamento_inss.gold.prep_beneficios_bi` mantém o mesmo grão da Sil
 | `ind_saude_mental` | `cid_grupo` | integer | Valor 1 para registro com CID do capítulo F |
 | `ind_osteomuscular` | `cid_grupo` | integer | Valor 1 para registro com CID do capítulo M |
 | `ind_acidentario` | `natureza_afastamento` | integer | Valor 1 para registro classificado como acidentário |
+| `ind_afastamento_cid_informado` | `tipo_beneficio`, `cid_status` | integer | Valor 1 para afastamento com CID informado; denominador do percentual de afastamentos por diagnóstico sobre os afastamentos com diagnóstico |
 | `ind_afastamento_saude_mental` | `tipo_beneficio`, `cid_grupo` | integer | Valor 1 para registro simultaneamente classificado como afastamento e saúde mental |
 | `ind_afastamento_osteomuscular` | `tipo_beneficio`, `cid_grupo` | integer | Valor 1 para registro simultaneamente classificado como afastamento e osteomuscular |
 | `_data_processamento_gold` | Execução do pipeline | timestamp | Data e hora do processamento da camada Gold |
 
-A tabela Gold preparatória possui 59 colunas:
+A tabela Gold preparatória possui 65 colunas:
 
-- 36 colunas provenientes da Silver;
-- 23 atributos semânticos, indicadores e metadados adicionados na Gold.
+- 39 colunas provenientes da Silver;
+- 26 atributos semânticos, indicadores e metadados adicionados na Gold.
 
 ---
 
@@ -405,7 +412,7 @@ Neste projeto:
 
 - espécie 31 representa afastamento de natureza previdenciária;
 - espécie 91 representa afastamento de natureza acidentária;
-- outras espécies classificadas como afastamento recebem a categoria `outras_modalidades`;
+- espécies 36, 94 e 95 (auxílio-acidente e suplementar) não são afastamentos: são indenizações pagas após a consolidação de sequelas e recebem `tipo_beneficio = auxilio_acidente` e natureza `auxilio_acidente`;
 - benefícios não classificados como afastamento recebem a categoria `nao_aplicavel`.
 
 A classificação acidentária indica que o benefício foi registrado administrativamente como relacionado a acidente ou doença do trabalho.
@@ -537,6 +544,9 @@ Nenhuma dessas medidas deve ser apresentada como contagem de pessoas únicas sem
 | Silver Staging antes da Silver | Separar tratamento de qualidade de regras de negócio |
 | Valores sentinela convertidos para `null` | Padronizar a ausência de informação |
 | `despacho_cod = 0` mantido | O código representa Concessão Normal |
+| Zeros à esquerda removidos de `aps_cod`, `especie_cod` e `despacho_cod` | O mesmo código aparecia com e sem zeros conforme o arquivo (`04` e `4`), duplicando categorias |
+| Bronze identifica o layout do CSV pelo cabeçalho | Dois layouts distintos têm 23 colunas; agrupar só pela quantidade desalinhava 10 competências. Ver `docs/layouts_csv.md` |
+| Afastamento = auxílio-doença (31 e 91) | Auxílio-acidente (36, 94, 95) é indenização por sequela e aposentadoria por invalidez é benefício permanente |
 | `qt_anos_contribuicao = 0` mantido | Zero anos é um valor válido de negócio |
 | `ramo_atividade = Irrelevante` mantido | Trata-se de classificação oficial da fonte, não necessariamente ausência |
 | Datas convertidas com `try_to_date` | Permitir conversão segura de datas inválidas como `00/00/0000` |
