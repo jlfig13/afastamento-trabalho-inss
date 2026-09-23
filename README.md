@@ -21,8 +21,6 @@ Competência: **junho de 2023** | Total: **8.629.546 registros de benefício**
 
 ### Imagens
 
-> Adicione os prints do dashboard e o diagrama de arquitetura na pasta `imgs/`.
-
 ![Visão Geral — KPIs e distribuição por CID](imgs/visao_geral.png)
 ![Geografia — Distribuição por UF](imgs/geografia_uf.png)
 ![Arquitetura — Bronze → Silver → Gold → Dashboard](imgs/arquitetura.png)
