@@ -11,6 +11,49 @@ O job **pipeline_afastamento_inss** (ID: `1006226003442942`) orquestra o pipelin
 - **Trigger:** manual (sem agendamento configurado)
 
 ---
+## Dashboard AI/BI
+
+O pipeline alimenta um dashboard AI/BI publicado no Databricks com a seguinte estrutura:
+
+### Relationship Graph
+
+O dashboard utiliza um **relationship graph** com modelo estrela (star schema), conectando a tabela fato a 5 dimensões via chaves surrogate (SK):
+
+| Entidade | Dataset | Tabela UC | Cardinalidade |
+| --- | --- | --- | --- |
+| `Fato_Afastamentos` | `datasets/fato` | `afastamento_inss.gold.fato_afastamentos` | — |
+| `Dim_Tempo` | `datasets/dim_tempo` | `afastamento_inss.gold.dim_tempo` | MANY_TO_ONE |
+| `Dim_CID` | `datasets/dim_cid` | `afastamento_inss.gold.dim_cid` | MANY_TO_ONE |
+| `Dim_Especie` | `datasets/dim_especie` | `afastamento_inss.gold.dim_especie` | MANY_TO_ONE |
+| `Dim_Geografia` | `datasets/dim_geografia` | `afastamento_inss.gold.dim_geografia` | MANY_TO_ONE |
+| `Dim_Atividade` | `datasets/dim_atividade` | `afastamento_inss.gold.dim_atividade` | MANY_TO_ONE |
+
+Todos os widgets (exceto a pagina de Qualidade) utilizam `datasetName=""` com expressões entity-qualified, navegando pelo grafo de relacionamentos sem JOINs explicitos.
+
+### Filtro Temporal Global
+
+Um filtro `filter-date-range-picker` na pagina Global Filters e vinculado a `Dim_Tempo.dt_competencia`, aplicando-se automaticamente a todos os widgets de todas as paginas via relationship graph.
+
+### Paginas e Graficos Temporais
+
+| Pagina | Conteudo |
+| --- | --- |
+| Visao Geral | 6 KPIs, bar CID, 5 line charts temporais (evolucao total, por grupo CID, saude mental vs osteomuscular vs acidentario, por natureza, por sexo) |
+| Diagnosticos | Barras CID, saude mental e osteomuscular por faixa etaria e sexo |
+| Natureza do Afastamento | Pie por natureza, barras por especie de beneficio |
+| Geografia de Residencia | Barras e tabela por UF |
+| Perfil dos Registros | Barras por faixa etaria, sexo, filiacao + tabela detalhada |
+| Atividade Economica | Counters, barras e tabela por ramo (CNAE) |
+| Qualidade dos Dados | Cobertura de indicadores (SQL UNION, fora do relationship graph) |
+
+### Agendamento do Dashboard
+
+- **Schedule:** Atualizacao Diaria — Afastamentos INSS
+- **Cron:** `0 0 8 ? * MON-FRI` (seg-sex, 08:00 America/Sao_Paulo)
+- **Credenciais:** compartilhadas (run as owner)
+- **Materializacao:** habilitada no publish
+
+---
 ## DAG de Execução
 
 ```
@@ -123,8 +166,11 @@ Todas as tasks executam com a condição `ALL_SUCCESS` — se qualquer task falh
 
 ```
 afastamento-trabalho-inss/
+├── README.md
 ├── docs/
 │   └── orquestracao.md          ← este arquivo
+├── dashboard/
+│   └── Afastamentos INSS — Análise de Benefícios por Afastamento (Junho 2023).lvdash.json
 └── notebooks/
     ├── 01_bronze_ingestao.ipynb
     ├── 02_silver_staging.ipynb
@@ -180,7 +226,9 @@ databricks jobs repair-run <run_id> --rerun-all-failed-tasks --rerun-dependent-t
 
 ## Notas
 
-- O pipeline não possui agendamento (trigger manual). Para automatizar, considere configurar um schedule no job.
-- A fila (`queue.enabled = true`) garante que novas execuções aguardem a conclusão da execução atual.
-- Não há notificações por e-mail ou webhook configuradas.
+- O pipeline nao possui agendamento (trigger manual). Para automatizar, considere configurar um schedule no job.
+- A fila (`queue.enabled = true`) garante que novas execucoes aguardem a conclusao da execução atual.
+- Nao ha notificacoes por e-mail ou webhook configuradas.
 - Cada task executa em serverless compute (sem cluster dedicado).
+- **Fonte dos dados:** o dataset foi baixado manualmente do portal Dados Abertos do Governo Federal (dadosabertos.gov.br). A coleta nao foi automatizada devido a indisponibilidade da API no momento da criacao do pipeline.
+- **Dashboard:** o dashboard AI/BI possui agendamento proprio (atualizacao diaria seg-sex as 08:00 BRT), independente do agendamento do job de pipeline.
