@@ -295,6 +295,25 @@
       ],
       "catalog": "afastamento_inss",
       "schema": "gold"
+    },
+    {
+      "name": "temp_especie_outros",
+      "displayName": "Espécies em Outros (temp)",
+      "queryLines": [
+        "SELECT\n",
+        "  especie_cod,\n",
+        "  especie_desc,\n",
+        "  COUNT(*) as qtd\n",
+        "FROM\n",
+        "  afastamento_inss.silver.beneficios_concedidos\n",
+        "WHERE\n",
+        "  tipo_beneficio = 'outros'\n",
+        "GROUP BY\n",
+        "  especie_cod,\n",
+        "  especie_desc\n",
+        "ORDER BY\n",
+        "  qtd DESC"
+      ]
     }
   ],
   "pages": [
@@ -1764,6 +1783,35 @@
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "60e4012c",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "41eff546",
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-date-picker",
+              "encodings": {
+                "fields": []
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
       "layoutVersion": "GRID_V1"
     }
   ],
