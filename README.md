@@ -1,14 +1,43 @@
+# afastamento-trabalho-inss
+
+Pipeline de dados no Databricks para análise de afastamentos do trabalho utilizando microdados públicos do INSS.
+
+## Resultados em Destaque
+
+Competência: **junho de 2023** | Total: **8.629.546 registros de benefício**
+
+| Indicador | Valor |
+| --- | --- |
+| Grupo CID mais frequente — Lesões e consequências de causas externas | 2.087.302 (24,2%) |
+| Doenças osteomusculares | 1.961.455 (22,7%) |
+| Transtornos mentais e comportamentais | 1.048.972 (12,2%) |
+| Natureza acidentária (B91/B92/B94) | 514.150 (6,0%) |
+| Duração média do benefício | 131 dias |
+| RMI média | 1,31 salários-mínimos |
+| UF com maior volume — São Paulo | 1.856.354 (21,5%) |
+| Diagnóstico não informado | 546.844 (6,3%) |
+
+> Os três maiores grupos de CID somam quase 60% do total. São Paulo concentra 21,5% dos registros.
+
+### Imagens
+
+> Adicione os prints do dashboard e o diagrama de arquitetura na pasta `imgs/`.
+
+![Visão Geral — KPIs e distribuição por CID](imgs/visao_geral.png)
+![Geografia — Distribuição por UF](imgs/geografia_uf.png)
+![Arquitetura — Bronze → Silver → Gold → Dashboard](imgs/arquitetura.png)
+
 ## Objetivo
 
 Construir um pipeline de dados no Databricks para analisar os benefícios concedidos pelo INSS, com foco nos registros classificados como afastamento.
 
 O projeto compara diagnósticos associados a transtornos mentais e doenças osteomusculares por características previdenciárias, demográficas, geográficas e, quando disponível, econômicas.
 
-Os resultados representam registros de benefícios e não pessoas ou trabalhadores únicos. Indicadores por CNAE consideram somente o subconjunto com atividade econômica informada.
+> **Nota metodológica:** Os resultados representam **registros de benefícios** e não pessoas ou trabalhadores únicos. Indicadores por CNAE consideram somente o subconjunto com atividade econômica informada.
 
 ## Fonte dos Dados
 
-Os microdados utilizados neste projeto foram obtidos manualmente a partir do portal de Dados Abertos do Governo Federal ([dadosabertos.gov.br](https://dadosabertos.gov.br)), especificamente do conjunto de dados de benefícios concedidos pelo INSS.
+Os microdados utilizados neste projeto foram obtidos manualmente a partir do portal de Dados Abertos do Governo Federal ([dados.gov.br](https://dados.gov.br/dados/organizacoes/visualizar/instituto-nacional-do-seguro-social)), especificamente do conjunto de dados de benefícios concedidos pelo INSS.
 
 A coleta **não foi automatizada** devido à indisponibilidade da API no momento da criação do pipeline. O download foi realizado de forma manual e o arquivo CSV resultante foi carregado diretamente na camada Bronze do pipeline.
 
@@ -16,9 +45,32 @@ A coleta **não foi automatizada** devido à indisponibilidade da API no momento
 
 ## Arquitetura
 
-- Bronze
-- Silver
-- Gold
+```
+CSV (Dados Abertos)
+    │
+    ▼
+Bronze  →  ingestão bruta
+    │
+    ▼
+Silver  →  limpeza + regras de negócio
+    │
+    ▼
+Gold    →  modelo estrela (1 fato + 5 dimensões)
+    │
+    ▼
+Dashboard AI/BI  →  8 páginas analíticas
+```
+
+### Tabelas Gold (Unity Catalog)
+
+| Entidade | Tabela UC |
+| --- | --- |
+| Fato | `afastamento_inss.gold.fato_afastamentos` |
+| Dimensão Tempo | `afastamento_inss.gold.dim_tempo` |
+| Dimensão CID | `afastamento_inss.gold.dim_cid` |
+| Dimensão Espécie | `afastamento_inss.gold.dim_especie` |
+| Dimensão Geografia | `afastamento_inss.gold.dim_geografia` |
+| Dimensão Atividade | `afastamento_inss.gold.dim_atividade` |
 
 ## Tecnologias
 
@@ -26,17 +78,36 @@ A coleta **não foi automatizada** devido à indisponibilidade da API no momento
 - Delta Lake
 - PySpark
 - Spark SQL
-- AI/BI Dashboards (relationship graph, filtros temporais)
+- AI/BI Dashboards (relationship graph)
 
 ## Dashboard
 
 O projeto inclui um dashboard AI/BI publicado no Databricks, com:
 
-- **Relationship graph** conectando a tabela fato (`fato_afastamentos`) a 5 dimensões (`dim_tempo`, `dim_cid`, `dim_especie`, `dim_geografia`, `dim_atividade`) via chaves surrogate
-- **Filtro temporal global** (`filter-date-range-picker`) vinculado a `dim_tempo.dt_competencia`, aplicando-se a todos os widgets via relationship graph
-- **5 graficos temporais** (line charts) na pagina Visao Geral: evolucao total, por grupo CID, por indicadores de saude, por natureza do afastamento e por sexo
-- **6 paginas analiticas:** Visao Geral, Diagnosticos, Natureza do Afastamento, Geografia de Residencia, Perfil dos Registros, Atividade Economica e Qualidade dos Dados
-- **Agendamento automatico:** atualizacao diaria (seg-sex, 08:00 BRT)
+- **Relationship graph** conectando a tabela fato (`fato_afastamentos`) a 5 dimensões via chaves surrogate
+- **8 páginas analíticas:** Visão Geral, Perfil dos Registros, Atividade Econômica, Qualidade dos Dados, Natureza do Afastamento, Diagnósticos, Geografia de Residência e Global Filters
 
-# afastamento-trabalho-inss
-Pipeline de dados no Databricks para análise de afastamentos do trabalho utilizando microdados públicos do INSS.
+### Decisões de Modelagem
+
+- **Chaves surrogate determinísticas** com `sha2` (não `monotonically_increasing_id`), garantindo idempotência entre execuções
+- **Membro "NI"** em todas as dimensões, assegurando integridade referencial mesmo sem correspondência na fonte
+- **Validação de colunas obrigatórias** na entrada do notebook 05
+- **Leitura com `inferSchema=false`** para preservar zeros à esquerda dos códigos (ex.: CBO, CNAE)
+
+## Como Reproduzir
+
+1. Baixe o dataset de benefícios concedidos pelo INSS em [dados.gov.br](https://dados.gov.br/dados/organizacoes/visualizar/instituto-nacional-do-seguro-social)
+2. Coloque o arquivo CSV em `/Volumes/afastamento_inss/bronze/raw/`
+3. Execute os notebooks na ordem:
+
+| Ordem | Notebook | Tabela de Saída |
+| --- | --- | --- |
+| 0 | `00_exploracao` *(opcional)* | — |
+| 1 | `01_bronze_ingestao` | `afastamento_inss.bronze.beneficios_concedidos` |
+| 2 | `02_silver_staging` | `afastamento_inss.silver.stg_beneficios_concedidos` |
+| 3 | `03_silver` | `afastamento_inss.silver.beneficios_concedidos` |
+| 4 | `04_gold_prep_bi` | preparação Gold |
+| 5 | `05_gold_modelo_analitico` | modelo estrela Gold (1 fato + 5 dimensões) |
+| 6 | `06_analise_visualizacao` | análises e visualizações |
+
+> **Nota:** O dataset contém apenas a competência de junho/2023. Para justificar análises temporais e agendamento recorrente, carregue múltiplas competências.
