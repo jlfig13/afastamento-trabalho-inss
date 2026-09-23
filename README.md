@@ -4,22 +4,22 @@ Pipeline de dados no Databricks para análise de afastamentos do trabalho utiliz
 
 ## Resultados em Destaque
 
-Período: **jun/2023 a jul/2026** (38 competências consecutivas)
-
-> **Atenção:** os indicadores abaixo são da execução anterior à correção dos layouts dos CSVs e à redefinição de "afastamento" (auxílio-doença, espécies 31 e 91). Serão atualizados após a reexecução do pipeline. Veja `docs/layouts_csv.md`.
+Período dos indicadores: **jul/2023 a jul/2026** (37 competências) | Total: **11.531.845 registros de afastamento** (auxílio-doença, espécies 31 e 91)
 
 | Indicador | Valor |
 | --- | --- |
-| Grupo CID mais frequente — Lesões e consequências de causas externas | 2.087.302 (24,2%) |
-| Doenças osteomusculares | 1.961.455 (22,7%) |
-| Transtornos mentais e comportamentais | 1.048.972 (12,2%) |
-| Natureza acidentária (B91/B92/B94) | 514.150 (6,0%) |
-| Duração média do benefício | 131 dias |
-| RMI média | 1,31 salários-mínimos |
-| UF com maior volume — São Paulo | 1.856.354 (21,5%) |
-| Diagnóstico não informado | 546.844 (6,3%) |
+| Grupo CID mais frequente — Lesões e consequências de causas externas | 2.777.752 (24,1%) |
+| Doenças osteomusculares | 2.771.959 (24,0%) |
+| Transtornos mentais e comportamentais | 1.478.967 (12,8%) |
+| Natureza acidentária (auxílio-doença acidentário, espécie 91) | 654.244 (5,7%) |
+| Duração média do benefício | 111 dias |
+| RMI média | 1,32 salários-mínimos |
+| UF com maior volume — São Paulo | 2.499.169 (21,7%) |
+| Afastamentos sem CID informado | 735.443 (6,4%) |
 
-> Os três maiores grupos de CID somam quase 60% do total. São Paulo concentra 21,5% dos registros.
+> Os três maiores grupos de CID somam cerca de 61% do total. São Paulo concentra 21,7% dos registros. Sobre os afastamentos com CID informado, os transtornos mentais representam 13,7%.
+
+> **Observações:** a duração média considera os 11,4 milhões de registros com data de cessação informada. "Afastamento" não inclui auxílio-acidente (espécies 36, 94 e 95) nem aposentadoria por invalidez. A competência jun/2023 ainda não está nestes números e será incluída na próxima execução completa no Databricks. Os prints abaixo são da execução anterior e serão atualizados.
 
 ### Imagens
 
